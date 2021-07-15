@@ -3,7 +3,7 @@ import time
 import pygame
 from threading import Thread
 
-serverIp = "192.168.0.102"
+serverIp = "192.168.1.105"
 
 rows = []
 rows.append([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
@@ -90,6 +90,7 @@ def display():
     for o in opps:
         rows[round(o[2])][round(o[1])] = 3
         (a,b) = cord(o[1],o[2])
+        print(o[0])
         screen.blit(pygame.image.load(o[0]),(a + mx + 8, b + my))
     pygame.display.update()
 
@@ -114,20 +115,31 @@ pause_time = 0
 opps = []
 vectors = [(0,-0.25),(0,0.25),(0.25,0),(-0.25,0)]
 run = True
+
+KEYS = {
+    pygame.K_UP: 273,
+    pygame.K_DOWN: 274,
+    pygame.K_RIGHT: 275,
+    pygame.K_LEFT: 276,
+}
+
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
             break
         if event.type == pygame.KEYDOWN:
-            if event.key in range(273,277):
-                if direction == event.key:
-                    vector = vectors[event.key - 273]
-                    sprite = direct + str(event.key) + "/1.png"
+            print("Keydown ", str(event.key))
+            key = KEYS[event.key]
+            if key in range(273,277):
+                if direction == key:
+                    print("Keystroke!")
+                    vector = vectors[key - 273]
+                    sprite = direct + str(key) + "/1.png"
                     display()
                     if check(int(x),int(y),int(vector[0]*4),int(vector[1]*4)):
                         for step in range(1,5):
-                            sprite = direct + str(event.key) + "/" + str((step%4)+1) + ".png"
+                            sprite = direct + str(key) + "/" + str((step%4)+1) + ".png"
                             x += vector[0]
                             y += vector[1]
                             display()
@@ -135,8 +147,8 @@ while run:
                     else:
                         bump()
                 else:
-                    sprite = direct + str(event.key) + "/1.png"
-                direction = event.key
+                    sprite = direct + str(key) + "/1.png"
+                direction = key
     x = int(x)
     y = int(y)
     sprite = direct + str(direction) + "/1.png"
